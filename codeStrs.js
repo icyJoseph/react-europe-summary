@@ -330,3 +330,21 @@ function RegisterButton() {
   );
 }
 `;
+
+export const hiddenProp = `
+function Slideshow(props) {
+  return (
+    <div>
+      <div hidden={props.current !== 0}>
+        <Expensive1 />
+      </div>
+      <div hidden={props.current !== 1}>
+        <Expensive2 />
+      </div>
+      <div hidden={props.current !== 2}>
+        <Expensive3 />
+      </div>
+    </div>
+  );
+}
+`;

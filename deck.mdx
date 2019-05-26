@@ -23,7 +23,8 @@ import {
   useMount,
   useEventListener,
   naiveRedux,
-  useNaiveRedux
+  useNaiveRedux,
+  hiddenProp
 } from "./codeStrs";
 
 # ReactJS Workshop
@@ -169,7 +170,7 @@ Every render, each `pair` must be at the same `cursor` as before.
   - Element is inserted to the DOM
 - Update
   - The element update is reflected in the DOM
-  - Trigger by the parent or itself (not the children)
+  - Triggered by the parent or itself (not the children)
 - Unmount
   - The element is removed from the DOM
 
@@ -206,7 +207,7 @@ The mindset
 
 - What's the effect?
 - What should I clean up?
-- What trigger this effect?
+- What triggers this effect?
 
 ---
 
@@ -489,7 +490,7 @@ The future web is not just fast, it is scheduled.
 
 ### Preparing for Concurrent
 
-Fix the warnings
+Fix the warnings - `React.StrictMode`
 
 - Remove deprecated lifecycles -> hooks
 - String `ref` -> `useRef`
@@ -500,14 +501,22 @@ Fix the warnings
 
 ---
 
+### The hidden HTML prop
+
+- Render content in the background
+- Browser does not render while hidden
+
+<Renderer code={hiddenProp} fontSize="1.2rem" />
+
+---
+
 ...more
 
-- Measuring Height
-- `hidden` prop
-- Designing a component style API
+- Measuring Height with hooks
+- `useLayoutEffect`
+- Designing Scalable Components
 - `react-testing-library`
 - Little bit of SSR
-- `useLayoutEffect`
 - Migrate a Class Component using Portals to Hooks
 
 ---
