@@ -1,0 +1,492 @@
+export { condensed as theme } from "mdx-deck/themes";
+import { Appear } from "mdx-deck";
+import { Horizontal } from "mdx-deck/layouts";
+
+import Renderer from "./renderToString";
+import {
+  UncontrolledInput,
+  ClickSpy,
+  useDebounce,
+  queryExample,
+  useAsyncResource,
+  deboucedFetchExample,
+  renderPropsExample,
+  renderPropsApp,
+  failEffect,
+  fixedEffect,
+  classicInputRef,
+  inputWithFwdRef,
+  InputParent,
+  useForkRef,
+  useUseForkRef,
+  useEventCallback,
+  useMount,
+  useEventListener
+} from "./codeStrs";
+
+# ReactJS Workshop
+
+## React Europe 2019
+
+---
+
+![Evolve](evolve.png)
+
+:female-technologist: :male-technologist:
+
+---
+
+# Summary of the two days
+
+<ul style={{ columns: 3, margin: "1rem", fontSize: "1.5rem" }}>
+  <li>State of React</li>
+  <li>Terms</li>
+  <li>Primitives</li>
+  <li>Lifecycle</li>
+  <li>Start with React</li>
+  <li>Hooks</li>
+  <li>Rules of Hooks</li>
+  <li>State Management</li>
+  <li>Controlled Components</li>
+  <li>Effects</li>
+  <li>Custom Hooks</li>
+  <li>Error Boundaries</li>
+  <li>Limit of Boundaries</li>
+  <li>Render props</li>
+  <li>Advanced State Management</li>
+  <li>Scalable Components</li>
+  <li>Context</li>
+  <li>Avoid Redux</li>
+  <li>DOM Interactions</li>
+  <li>Effects in depth</li>
+</ul>
+
+---
+
+# Today
+
+<ul>
+  <Appear>
+    <li>Hooks</li>
+    <li>Complicated Hooks</li>
+    <li>React's efforts to mitigate complexity</li>
+  </Appear>
+</ul>
+
+---
+
+# Hooks
+
+Motivations
+
+- A simpler API to learn
+- A paradigm shift
+- Surpass the HOCs and render props limitations
+
+---
+
+### 🎣?
+
+React Hook • A special function to interact with <br/> React inside a function component.
+
+<ul
+  style={{
+    fontSize: "2rem",
+    listStyle: "none",
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-around"
+  }}
+>
+  <li>
+    Simple hooks 😇
+    <ul>
+      <li>useState</li>
+      <li>useEffect</li>
+      <li>useContext</li>
+      <li>useReducer</li>
+    </ul>
+  </li>
+  <li>
+    Advanced hooks 😈
+    <ul>
+      <li>useCallBack</li>
+      <li>useMemo</li>
+      <li>useRef</li>
+      <li>useImperativeHandle</li>
+      <li>useLayoutEffect</li>
+      <li>useDebugValue</li>
+    </ul>
+  </li>
+</ul>
+
+---
+
+### You should know already
+
+<div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+  <ul>
+    <li>No Hooks in classes</li>
+    <li>No Hooks in conditionals or unstable loops</li>
+  </ul>
+  <div
+    style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+  >
+    <p>
+      A React Component is a function that <br /> takes in props and returns a
+      React element
+    </p>
+    <code>props => element</code>
+  </div>
+</div>
+
+---
+
+Each hook creates a value, setter `pair`.
+
+React identifies them both with a `cursor`.
+
+Every render, each `pair` must be at the same `cursor` as before.
+
+---
+
+#### Two Phases: Render (📖) and Commit (📝 + 🔐)
+
+<iframe
+  title="RendervsCommit"
+  src="https://react-lifecycle.netlify.com"
+  frameBorder="no"
+  width="1000px"
+  height="600px"
+  style={{ background: "white" }}
+/>
+
+---
+
+- Mount
+  - Element is inserted to the DOM
+- Update
+  - The element update is reflected in the DOM
+  - Trigger by the parent or itself (not the children)
+- Unmount
+  - The element is removed from the DOM
+
+---
+
+React does a render phase where it collects updates.
+
+Then it commits them to the DOM in batches.
+
+---
+
+<h3 style={{textTransform:'none'}}>useState</h3>
+
+- Gives `value` and `setter`
+- State is not merged!
+- Access previous value by passing a function to `setter`
+- Use as many `useState` calls as you need!
+
+---
+
+- Design controlled components with useState
+
+<Renderer language="jsx" code={UncontrolledInput} />
+
+<blockquote>Controlled Component -> Non-Controlled</blockquote>
+
+---
+
+<h3 style={{textTransform:'none'}}>useEffect</h3>
+
+Effect • A side effect function called after the commit phase.
+
+The mindset
+
+- What's the effect?
+- What should I clean up?
+- What trigger this effect?
+
+---
+
+### Clean after yourself
+
+<Renderer code={ClickSpy} />
+
+---
+
+### Effect phases
+
+- Mount
+  - Run effect
+- Update
+  - Clean effect
+  - Run effect
+- Unmount
+  - Clean effect
+
+---
+
+- One Effect for one problem
+- Dependencies matter, `undefined` vs `[]` vs `[...deps]`.
+
+---
+
+### Reality can be whatever you want 💎
+
+As long as your hooks:
+
+- Declared in a predictable order
+- Prefixed with use
+- One feature per hook
+
+---
+
+### Debouncing
+
+<Renderer
+  code={`
+ debounce(callback, wait) {
+    let timeout;
+    return (...args) => {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => callback.apply(context, args), wait);
+    };
+}
+  `}
+/>
+
+---
+
+### The Hooks Way
+
+<Renderer code={useDebounce} />
+
+---
+
+### Search Input
+
+<Renderer language="jsx" code={queryExample} fontSize="1.5rem" />
+
+---
+
+<div
+  style={{
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center"
+  }}
+>
+  <div style={{ flex: 1, margin: "0 2rem" }}>
+    <h3>Fetch Data</h3>
+  </div>
+  <div style={{ flex: 5 }}>
+    <Renderer code={useAsyncResource} fontSize="1.15rem" />
+  </div>
+</div>
+
+---
+
+### Back at Search Input
+
+<Renderer code={deboucedFetchExample} fontSize="1.25rem" />
+
+---
+
+### but there's one problem
+
+The logic is mangled, and the whole tree re-renders.
+
+Let's fix that!
+
+---
+
+### Render Props
+
+<Renderer code={renderPropsExample} />
+
+---
+
+### Why Render Props?
+
+- Isolation of the rendering
+- Allows fine grain handling of the errors
+
+---
+
+#### The result
+
+<Renderer code={renderPropsApp} fontSize="1.2rem" />
+
+---
+
+<h3 style={{textTransform:'none'}}>useRef</h3>
+
+- A value saved during the lifetime of the element
+- Store values that are not used in the render output
+
+---
+
+This effect falls victim of closures!
+
+<Renderer code={failEffect} fontSize="1.5rem" />
+
+---
+
+Even injecting `count` as a dependency won't really help.
+
+Everytime `count` updates, the effect `clean up` runs.
+
+This clears the `interval`.
+
+---
+
+useRef saves the day
+
+<Renderer code={fixedEffect} fontSize="1.5rem" />
+
+---
+
+### Playing with the DOM
+
+A classic
+
+<Renderer code={classicInputRef} />
+
+---
+
+<h3 style={{textTransform:'none'}}>useImperativeHandle</h3>
+
+Imagine you've got a bunch of inputs, each with a ref forwarded to it
+
+<Renderer code={inputWithFwdRef} />
+
+---
+
+Then at the parent
+
+<Renderer code={InputParent} />
+
+---
+
+But what if you just want to access the `ref` <br/> outside the `useEffect` hook
+
+---
+
+The commit phase might change `ref.current`.
+
+How do you know the `ref` you are accessing <br/> is pointing to the latest element
+in the DOM?
+
+---
+
+<div
+  style={{
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center"
+  }}
+>
+  <div style={{ flex: 1, margin: "0 2rem" }}>
+    <h3 style={{ textTransform: "none" }}>useForkRef</h3>
+  </div>
+  <div style={{ flex: 5 }}>
+    <Renderer code={useForkRef} fontSize="1.25rem" />
+  </div>
+</div>
+
+---
+
+🤔????
+
+<Renderer code={useUseForkRef} />
+
+---
+
+<h3 style={{textTransform:'none'}}>useEventCallback</h3>
+
+<Renderer code={useEventCallback} />
+
+---
+
+<h3 style={{textTransform:'none'}}>useMount</h3>
+
+Antipattern
+
+<Renderer code={useMount} />
+
+---
+
+<h3 style={{textTransform:'none'}}>useEventListener</h3>
+
+Add once and ensure clean up
+
+<Renderer code={useEventListener} />
+
+---
+
+### JavaScript's Throw
+
+Being able to `throw` in JavaScript enables <br/>
+`Suspense` and opens the door for `Concurrent` mode.
+
+---
+
+### First the Catch
+
+The Error Boundary catches when <br/> a Component throws `Error`.
+
+---
+
+### Throw a Promise
+
+The Suspense Boundary catches when <br/> a Component throws `new Promise`.
+
+---
+
+- Concurrent mode (basically) throws while rendering.
+- Skipping the commit phase, to do something more important.
+
+---
+
+### Scheduling
+
+- Previously called "async mode"
+- Enabled by the `Just Noticeable Difference` algorithm
+- Doesn't block the main thread (time-slicing)
+- Unstable for now
+- React 16.x (~Q2 2019) ?
+- Lead facebook to contribute `isInputPending` to the browser API.
+- Will be it's own package!
+
+The future web is not just fast, it is scheduled.
+
+---
+
+### Preparing for Concurrent
+
+Fix the warnings
+
+- Remove deprecated lifecycles -> hooks
+- String `ref` -> `useRef`
+- `ReactDOM.findDOMNode()` -> `forwardRef()`
+- Legacy context API -> `createContext()`
+- Support a render phase without a commit one
+  - In concurrent mode last render doesn't necessarily mean "latest committed state".
+
+---
+
+Totally not the end
+
+- `createContext` without `useMemo` updates every render, and reloads the whole subtree.
+  - React has no way to bailout on Context updates (try to do before Monday)
+- `useContext` + `useReducer` + `useMemo` = naive `Redux` (try to do before Monday)
+- Measuring Height
+- `hidden` prop
+- Designing a component style API
+
+---
+
+Join next year!
