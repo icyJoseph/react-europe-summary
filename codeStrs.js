@@ -206,7 +206,7 @@ export const InputParent = `
 function App() {
   const searchInputRef = useRef();
   useEffect(() => {
-    searchInputRef.current.focus();
+    searchInputRef.current.fancyFocus();
   }, []);
 
   return <FancyInput ref={searchInputRef} />;
@@ -290,5 +290,43 @@ function useEventListener(target, event, callback) {
 
     return () => target.removeEventListener(event, handleEvent);
   }, [event, target]);
+}
+`;
+
+export const naiveRedux = `
+const ReduxContext = createContext(); // Do not export 
+
+export function ReduxProvider({ reducer, initialState, children }) {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  
+  const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
+  
+  return (
+    <ReduxContext.Provider value={value}>{children}</ReduxContext.Provider>
+  );
+}
+
+export function useRedux() {
+  return useContext(ReduxContext);
+}
+`;
+
+export const useNaiveRedux = `
+function App() {
+  return (
+    <ReduxProvider reducer={reducer} initialState={initialState}>
+      <>
+        <RegisterButton />
+      </>
+    </ReduxProvider>
+  );
+}
+
+function RegisterButton() {
+  const { dispatch } = useRedux();
+
+  return (
+    <button onClick={() => dispatch({ type: "register" })}>Register</button>
+  );
 }
 `;

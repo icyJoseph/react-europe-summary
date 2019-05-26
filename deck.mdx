@@ -1,5 +1,5 @@
 export { condensed as theme } from "mdx-deck/themes";
-import { Appear } from "mdx-deck";
+import { Appear, Notes } from "mdx-deck";
 import { Horizontal } from "mdx-deck/layouts";
 
 import Renderer from "./renderToString";
@@ -21,7 +21,9 @@ import {
   useUseForkRef,
   useEventCallback,
   useMount,
-  useEventListener
+  useEventListener,
+  naiveRedux,
+  useNaiveRedux
 } from "./codeStrs";
 
 # ReactJS Workshop
@@ -405,15 +407,23 @@ in the DOM?
 
 ---
 
-<h3 style={{textTransform:'none'}}>useEventCallback</h3>
+### Redux?
 
-<Renderer code={useEventCallback} />
+<Renderer code={naiveRedux} />
+
+---
+
+This approach works better to inject theme or i18n
+
+<Renderer code={useNaiveRedux} fontSize="1.25rem" />
+
+React has no way to bailout on Context updates
 
 ---
 
 <h3 style={{textTransform:'none'}}>useMount</h3>
 
-Antipattern
+Anti-pattern
 
 <Renderer code={useMount} />
 
@@ -427,38 +437,50 @@ Add once and ensure clean up
 
 ---
 
-### JavaScript's Throw
+<h3 style={{textTransform:'none'}}>useEventCallback</h3>
 
-Being able to `throw` in JavaScript enables <br/>
-`Suspense` and opens the door for `Concurrent` mode.
+<Renderer code={useEventCallback} />
 
 ---
 
-### First the Catch
+### Fibers and JavaScript's Throw
+
+React Fibers are able catch `throw` coming from children
+
+- Set `Error Boundaries`
+- Set `Suspense Boundaries`
+- Opens the door for `Concurrent` mode
+
+---
+
+### First Catch an Error
 
 The Error Boundary catches when <br/> a Component throws `Error`.
 
 ---
 
-### Throw a Promise
+### Then Throw a Promise
 
 The Suspense Boundary catches when <br/> a Component throws `new Promise`.
 
 ---
 
-- Concurrent mode (basically) throws while rendering.
-- Skipping the commit phase, to do something more important.
+### Simply put
+
+- `Concurrent` throws during rendering.
+- Skips the commit phase, to do something more important.
+- Looks like `Concurrent` will also be a React Boundary.
 
 ---
 
 ### Scheduling
 
-- Previously called "async mode"
+- Previously called `async mode`
 - Enabled by the `Just Noticeable Difference` algorithm
 - Doesn't block the main thread (time-slicing)
 - Unstable for now
 - React 16.x (~Q2 2019) ?
-- Lead facebook to contribute `isInputPending` to the browser API.
+- Led facebook to contribute `isInputPending` to the browser API.
 - Will be it's own package!
 
 The future web is not just fast, it is scheduled.
@@ -474,18 +496,19 @@ Fix the warnings
 - `ReactDOM.findDOMNode()` -> `forwardRef()`
 - Legacy context API -> `createContext()`
 - Support a render phase without a commit one
-  - In concurrent mode last render doesn't necessarily mean "latest committed state".
+  - Last render doesn't always equal to latest committed state.
 
 ---
 
-Totally not the end
+...more
 
-- `createContext` without `useMemo` updates every render, and reloads the whole subtree.
-  - React has no way to bailout on Context updates (try to do before Monday)
-- `useContext` + `useReducer` + `useMemo` = naive `Redux` (try to do before Monday)
 - Measuring Height
 - `hidden` prop
 - Designing a component style API
+- `react-testing-library`
+- Little bit of SSR
+- `useLayoutEffect`
+- Migrate a Class Component using Portals to Hooks
 
 ---
 
