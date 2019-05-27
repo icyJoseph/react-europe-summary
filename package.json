@@ -1,12 +1,13 @@
 {
-  "name": "react-meetup-gbg",
+  "name": "react-meetup-summary",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "mdx-deck deck.mdx",
-    "build": "mdx-deck build deck.mdx"
+    "build": "mdx-deck build deck.mdx",
+    "deploy": "yarn build && surge --domain https://puny-fog.surge.sh/ --project ./dist"
   },
   "author": "",
   "license": "ISC",
